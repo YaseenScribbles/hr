@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Company;
+use App\Models\CompanyUser;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -17,9 +19,22 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        $user = User::firstOrCreate(
+            ['email' => 'admin@essa.com'],
+            [
+                'name' => 'Admin',
+                'role' => 'admin',
+                'password' => 'password'
+            ]
+        );
+
+        $companies = Company::factory(2)->create();
+
+        foreach ($companies as $company) {
+            CompanyUser::create([
+                'user_id' => $user->id,
+                'company_id' => $company->id
+            ]);
+        }
     }
 }

@@ -36,8 +36,25 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         return [
+            // keep the default shared props (flash, errors, etc.)
             ...parent::share($request),
-            //
+
+            // replicate the types we declared in TypeScript.  The
+            // auth/user object can be anything you like; make sure it
+            // matches what the front‑end expects.
+            'auth' => [
+                'user' => $request->user()
+                    ? ['id' => $request->user()->id, 'name' => $request->user()->name, 'role' => $request->user()->role]
+                    : null,
+            ],
+
+            // enforce a consistent flash structure so TS can pick it up.
+            'flash' => [
+                'toast' => $request->session()->get('toast'),
+            ],
+
+            //companies assigned to the user
+            'user_companies' => $request->user() ? $request->user()->companies : [],
         ];
     }
 }
