@@ -43,12 +43,12 @@ class EmployeeController extends Controller
 
         // 🧑‍💼 Department filter
         if ($request->department_id) {
-            $query->where('department_id', $request->department_id);
+            $query->where('dept_id', $request->department_id);
         }
 
         // 🏷 Designation filter
         if ($request->designation_id) {
-            $query->where('designation_id', $request->designation_id);
+            $query->where('des_id', $request->designation_id);
         }
 
         // ✅ Status filter
@@ -109,6 +109,11 @@ class EmployeeController extends Controller
             'employee.dept_id' => 'required|exists:departments,id',
             'employee.cat_id' => 'required|exists:categories,id',
             'employee.des_id' => 'required|exists:designations,id',
+            'employee.sal_type' => 'nullable|string',
+            'employee.salary' => 'nullable|numeric|min:0',
+            'employee.esi_eligible' => 'nullable|boolean',
+            'employee.esi_number' => 'nullable|string',
+            'employee.pf_number' => 'nullable|string',
 
             // Personal
 
@@ -219,6 +224,11 @@ class EmployeeController extends Controller
             'employee.dept_id' => 'required|exists:departments,id',
             'employee.cat_id' => 'required|exists:categories,id',
             'employee.des_id' => 'required|exists:designations,id',
+            'employee.sal_type' => 'nullable|string',
+            'employee.salary' => 'nullable|numeric|min:0',
+            'employee.esi_eligible' => 'nullable|boolean',
+            'employee.esi_number' => 'nullable|string',
+            'employee.pf_number' => 'nullable|string',
 
             // Personal
             'personal.img' => 'nullable|image|max:2048',

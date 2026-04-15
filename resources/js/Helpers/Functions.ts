@@ -1,4 +1,4 @@
-import { isValid, differenceInYears } from "date-fns";
+import { isValid, differenceInYears, format, parse } from "date-fns";
 import { EmployeeDetail, EmployeeFormData } from "../../../types/global";
 
 export const calculateAge = (dob: string | null) => {
@@ -26,6 +26,10 @@ export const mapEmployeeToForm = (emp: EmployeeDetail): EmployeeFormData => {
             dept_id: Number(emp.dept_id),
             cat_id: Number(emp.cat_id),
             des_id: Number(emp.des_id),
+            sal_type: emp.sal_type || "BASIC + DA",
+            salary: emp.salary ? Number(emp.salary) : null,
+            esi_eligible: emp.esi_eligible,
+            esi_number: emp.esi_number,
         },
 
         personal: {
@@ -72,3 +76,18 @@ export const mapEmployeeToForm = (emp: EmployeeDetail): EmployeeFormData => {
         })),
     };
 };
+
+export const formatTime = (time?: string) => {
+    if (!time) return "";
+
+    const clean = time.split(".")[0];
+    const parsed = parse(clean, "HH:mm:ss", new Date());
+
+    return isValid(parsed) ? format(parsed, "hh:mm a") : "";
+};
+
+export const extractHourAndMinutes = (time: string) => {
+    if (!time) return "";
+    const clean = time.split(":").slice(0, 2).join(":");
+    return clean
+}

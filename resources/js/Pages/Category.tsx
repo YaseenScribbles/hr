@@ -23,11 +23,11 @@ const Category = ({ categories, flash, user_companies, auth }: Props) => {
     const [showModal, setShowModal] = useState(false);
     const [editItem, setEditItem] = useState<
         | {
-              id: number;
-              name: string;
-              active: boolean;
-              company_id: number;
-          }
+            id: number;
+            name: string;
+            active: boolean;
+            company_id: number;
+        }
         | undefined
     >(undefined);
     const [editMode, setEditMode] = useState(false);
@@ -97,16 +97,19 @@ const Category = ({ categories, flash, user_companies, auth }: Props) => {
                                             >
                                                 Edit
                                             </button>
-                                            <button
-                                                className="bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600 cursor-pointer"
-                                                onClick={() => {
-                                                    router.delete(
-                                                        `/categories/${cat.id}`,
-                                                    );
-                                                }}
-                                            >
-                                                Delete
-                                            </button>
+                                            {
+                                                auth.user?.role == "admin" && (
+                                                    <button
+                                                        className="bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600 cursor-pointer"
+                                                        onClick={() => {
+                                                            router.delete(
+                                                                `/categories/${cat.id}`,
+                                                            );
+                                                        }}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                )}
                                         </td>
                                     </tr>
                                 ))}

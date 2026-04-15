@@ -22,6 +22,11 @@ class Employee extends Model
         'dept_id',
         'cat_id',
         'des_id',
+        'sal_type',
+        'salary',
+        'esi_eligible',
+        'esi_number',
+        'pf_number',
     ];
 
     protected $casts = [

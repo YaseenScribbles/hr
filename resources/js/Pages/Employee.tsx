@@ -215,16 +215,19 @@ const Employee = ({ auth, flash, employees, user_companies, departments, categor
                                                 >
                                                     Edit
                                                 </button>
-                                                <button
-                                                    className="bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600 cursor-pointer"
-                                                    onClick={() => {
-                                                        router.delete(
-                                                            `/employees/${emp.id}`,
-                                                        );
-                                                    }}
-                                                >
-                                                    Delete
-                                                </button>
+                                                {
+                                                    auth.user?.role == "admin" && (
+                                                        <button
+                                                            className="bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600 cursor-pointer"
+                                                            onClick={() => {
+                                                                router.delete(
+                                                                    `/employees/${emp.id}`,
+                                                                );
+                                                            }}
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    )}
                                             </td>
                                         </tr>
                                     ))}
@@ -284,6 +287,11 @@ const Modal = ({ isOpen, onClose, editMode, companies, departments, categories, 
             dept_id: 0,
             cat_id: 0,
             des_id: 0,
+            sal_type: "BASIC + DA",
+            salary: null,
+            esi_eligible: true,
+            esi_number: null,
+            pf_number: null,
         },
         personal: {
             physically_challenged: false,

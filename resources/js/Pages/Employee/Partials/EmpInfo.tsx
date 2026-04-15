@@ -190,6 +190,30 @@ export default function EmployeeSection({ data, setData, companies, departments,
                 </select>
             </div>
 
+            {/* Salary Type */}
+            <div>
+                <label className="text-gray-300 text-sm">Salary Type</label>
+                <select
+                    className="w-full mt-1 p-2 rounded bg-gray-800 text-white disabled:bg-gray-600"
+                    value={data.employee.sal_type || ""}
+                    onChange={(e) => updateEmployee("sal_type", e.target.value)}
+                >
+                    <option value="BASIC + DA">BASIC + DA</option>
+                    <option value="BASIC">BASIC</option>
+                </select>
+            </div>
+
+            {/* Salary */}
+            <div>
+                <label className="text-gray-300 text-sm">Salary</label>
+                <input
+                    type="number"
+                    value={data.employee.salary || ""}
+                    onChange={(e) => updateEmployee("salary", Number(e.target.value))}
+                    className="w-full mt-1 p-2 rounded bg-gray-800 text-white"
+                />
+            </div>
+
             <div className="flex flex-col-reverse">
 
                 {/* Status */}
@@ -212,6 +236,38 @@ export default function EmployeeSection({ data, setData, companies, departments,
                     <label className="text-gray-300">Audit</label>
                 </div>
 
+            </div>
+
+            {/* ESI Eligible */}
+            <div className="flex items-center gap-2">
+                <input
+                    type="checkbox"
+                    checked={data.employee.esi_eligible}
+                    onChange={(e) => updateEmployee("esi_eligible", e.target.checked)}
+                />
+                <label className="text-gray-300">ESI Eligible</label>
+            </div>
+
+            {/* ESI Number */}
+            <div>
+                <label className="text-gray-300 text-sm">ESI Number</label>
+                <input
+                    type="text"
+                    value={data.employee.esi_number || ""}
+                    onChange={(e) => updateEmployee("esi_number", e.target.value)}
+                    className="w-full mt-1 p-2 rounded bg-gray-800 text-white"
+                />
+            </div>
+
+            {/* PF Number */}
+            <div>
+                <label className="text-gray-300 text-sm">PF Number</label>
+                <input
+                    type="text"
+                    value={data.employee.pf_number || ""}
+                    onChange={(e) => updateEmployee("pf_number", e.target.value)}
+                    className="w-full mt-1 p-2 rounded bg-gray-800 text-white"
+                />
             </div>
 
 

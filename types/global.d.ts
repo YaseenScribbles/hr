@@ -55,6 +55,11 @@ export type Employee = {
     dept_id: number;
     cat_id: number;
     des_id: number;
+    sal_type?: string | null;
+    salary?: number | null;
+    esi_eligible?: boolean;
+    esi_number?: string | null;
+    pf_number?: string | null;
 };
 
 export type EmployeePersonal = {
@@ -182,6 +187,11 @@ export interface EmployeeDetail {
     d_o_l: string | null;
     status: boolean;
     audit: boolean;
+    sal_type: string | null;
+    salary: string | null;
+    esi_eligible: boolean;
+    esi_number: string | null;
+    pf_number: string | null;
 
     company_id: string;
     dept_id: string;

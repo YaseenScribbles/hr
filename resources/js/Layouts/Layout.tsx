@@ -1,13 +1,47 @@
 import { router } from "@inertiajs/react";
 import { route } from "ziggy-js";
 import { Toaster } from "react-hot-toast";
+import { useEffect, useRef } from "react";
 
 interface LayoutProps {
     children: React.ReactNode;
     role?: "admin" | "user" | undefined;
 }
 
+const IDLE_TIMEOUT = 30 * 60 * 1000;
+
 function Layout({ children, role }: LayoutProps) {
+
+    const idleTimer = useRef<number | null>(null);
+
+    const resetIdleTimer = () => {
+        if (idleTimer.current) {
+            window.clearTimeout(idleTimer.current);
+        }
+        idleTimer.current = window.setTimeout(() => {
+            router.post(route("logout"));
+        }, IDLE_TIMEOUT);
+    };
+
+    useEffect(() => {
+        const events = ["mousemove", "mousedown", "keydown", "touchstart", "scroll"];
+
+        events.forEach((event) => {
+            document.addEventListener(event, resetIdleTimer);
+        });
+
+        resetIdleTimer();
+
+        return () => {
+            if (idleTimer.current) {
+                window.clearTimeout(idleTimer.current);
+            }
+            events.forEach((event) => {
+                document.removeEventListener(event, resetIdleTimer);
+            });
+        };
+    }, []);
+
 
     return (
         <div className="min-h-screen bg-gray-950">
@@ -17,7 +51,10 @@ function Layout({ children, role }: LayoutProps) {
                     <h1 className="text-3xl text-white font-logo">H R M</h1>
                     <div className="flex space-x-4">
                         <a
-                            href={route("dashboard")}
+                            href="#"
+                            onClick={() =>
+                                router.visit(route("dashboard"))
+                            }
                             className="text-gray-300 hover:text-white"
                         >
                             Dashboard
@@ -98,6 +135,39 @@ function Layout({ children, role }: LayoutProps) {
                                 >
                                     Designation
                                 </a>
+                                <a
+                                    href="#"
+                                    onClick={() =>
+                                        router.visit(
+                                            route("shifts.index"),
+                                        )
+                                    }
+                                    className="block px-4 py-2 text-gray-300 hover:bg-gray-700"
+                                >
+                                    Shift Master
+                                </a>
+                                <a
+                                    href="#"
+                                    onClick={() =>
+                                        router.visit(
+                                            route("defaults.index"),
+                                        )
+                                    }
+                                    className="block px-4 py-2 text-gray-300 hover:bg-gray-700"
+                                >
+                                    Defaults
+                                </a>
+                                <a
+                                    href="#"
+                                    onClick={() =>
+                                        router.visit(
+                                            route("deductions.index"),
+                                        )
+                                    }
+                                    className="block px-4 py-2 text-gray-300 hover:bg-gray-700"
+                                >
+                                    Deductions
+                                </a>
                             </div>
                         </div>
                         <a
@@ -110,8 +180,26 @@ function Layout({ children, role }: LayoutProps) {
                             className="text-gray-300 hover:text-white">
                             Employee
                         </a>
-                        <a href="#" className="text-gray-300 hover:text-white">
-                            Setting
+                        <a
+                            href="#"
+                            onClick={() => router.visit(route("rosters.index"))}
+                            className="text-gray-300 hover:text-white"
+                        >
+                            Roster
+                        </a>
+                        <a
+                            href="#"
+                            onClick={() => router.visit(route("attendance.index"))}
+                            className="text-gray-300 hover:text-white"
+                        >
+                            Attendance
+                        </a>
+                        <a
+                            href="#"
+                            onClick={() => router.visit(route("reports.index"))}
+                            className="text-gray-300 hover:text-white"
+                        >
+                            Reports
                         </a>
                         <a
                             href="#"

@@ -23,11 +23,11 @@ const Department = ({ departments, flash, user_companies, auth }: Props) => {
     const [showModal, setShowModal] = useState(false);
     const [editItem, setEditItem] = useState<
         | {
-              id: number;
-              company_id: number;
-              name: string;
-              active: boolean;
-          }
+            id: number;
+            company_id: number;
+            name: string;
+            active: boolean;
+        }
         | undefined
     >(undefined);
     const [editMode, setEditMode] = useState(false);
@@ -97,16 +97,20 @@ const Department = ({ departments, flash, user_companies, auth }: Props) => {
                                             >
                                                 Edit
                                             </button>
-                                            <button
-                                                className="bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600 cursor-pointer"
-                                                onClick={() => {
-                                                    router.delete(
-                                                        `/departments/${dept.id}`,
-                                                    );
-                                                }}
-                                            >
-                                                Delete
-                                            </button>
+                                            {
+                                                auth.user?.role == "admin" && (
+                                                    <button
+                                                        className="bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600 cursor-pointer"
+                                                        onClick={() => {
+                                                            router.delete(
+                                                                `/departments/${dept.id}`,
+                                                            );
+                                                        }}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                )
+                                            }
                                         </td>
                                     </tr>
                                 ))}
