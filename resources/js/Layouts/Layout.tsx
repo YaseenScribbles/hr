@@ -50,7 +50,7 @@ function Layout({ children, role }: LayoutProps) {
                 <div className="container mx-auto flex items-center justify-between">
                     <h1 className="text-3xl text-white font-logo">H R M</h1>
                     <div className="flex space-x-4">
-                        <a
+                        {/* <a
                             href="#"
                             onClick={() =>
                                 router.visit(route("dashboard"))
@@ -58,7 +58,7 @@ function Layout({ children, role }: LayoutProps) {
                             className="text-gray-300 hover:text-white"
                         >
                             Dashboard
-                        </a>
+                        </a> */}
                         {/* Show drop down while hovering and add three options */}
                         <div className="relative">
                             <a

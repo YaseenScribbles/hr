@@ -4,7 +4,7 @@ function Loading() {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      window.location.href = '/login';
+      window.location.href = '/employees';
     }, 2000); // Redirect after 2 seconds
 
     return () => clearTimeout(timer); // Cleanup the timer on component unmount

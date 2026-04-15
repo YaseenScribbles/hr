@@ -23,7 +23,7 @@ class AuthController extends Controller
 
         if ($auth->attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->route('dashboard')->with('toast', ['type' => 'success', 'message' => 'Login success']);
+            return redirect()->route('employees.index')->with('toast', ['type' => 'success', 'message' => 'Login success']);
         }
 
         return back()->withErrors(['email' => 'Invalid credentials']);
