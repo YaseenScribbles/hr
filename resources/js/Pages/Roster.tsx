@@ -304,7 +304,7 @@ const Roster = ({ auth, flash, rosters, employees, shifts, summary, designations
     }, [month_days]);
 
     return (
-        <Layout role={auth.user?.role}>
+        <Layout role={auth.user?.role} userName={auth.user?.name}>
             <div className="p-2">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-4">
                     <div>

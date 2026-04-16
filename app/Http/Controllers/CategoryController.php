@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
@@ -12,7 +14,8 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::with('company')->get();
+        $userCompanyIds = Auth::user()->companies->pluck('id')->toArray();
+        $categories = Category::with('company')->whereIn('company_id', $userCompanyIds)->get();
         return inertia('Category', compact('categories'));
     }
 
@@ -29,9 +32,10 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
+        $userCompanyIds = Auth::user()->companies->pluck('id')->toArray();
         $request->validate([
             'name' => 'required|string|max:255',
-            'company_id' => 'required|exists:companies,id'
+            'company_id' => ['required', 'integer', Rule::in($userCompanyIds)]
         ]);
 
         Category::create([...$request->only('name', 'company_id'), 'created_by' => $request->user()->id]);
@@ -60,10 +64,11 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
+        $userCompanyIds = Auth::user()->companies->pluck('id')->toArray();
         $request->validate([
             'name' => 'required|string|max:255',
             'active' => 'required|boolean',
-            'company_id' => 'required|exists:companies,id'
+            'company_id' => ['required', 'integer', Rule::in($userCompanyIds)]
         ]);
 
         $category->update([

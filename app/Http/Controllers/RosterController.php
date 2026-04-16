@@ -8,6 +8,7 @@ use App\Models\Roster;
 use App\Models\ShiftMaster;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -18,16 +19,19 @@ class RosterController extends Controller
      */
     public function index(Request $request)
     {
+        $userCompanyIds = Auth::user()->companies->pluck('id')->toArray();
         $month = (int) $request->query('month', Carbon::now()->month);
         $year = (int) $request->query('year', Carbon::now()->year);
         $selectedDesignation = (int) $request->query('designation_id', 0);
 
         $designations = Designation::select('id', 'name')
+            ->whereIn('company_id', $userCompanyIds)
             ->orderBy('name')
             ->get();
 
         $employees = Employee::select('id', 'name', 'des_id')
             ->with('designation:id,name')
+            ->whereIn('company_id', $userCompanyIds)
             ->when($selectedDesignation, function ($query) use ($selectedDesignation) {
                 $query->where('des_id', $selectedDesignation);
             })
@@ -35,6 +39,7 @@ class RosterController extends Controller
             ->get();
 
         $shifts = ShiftMaster::select('id', 'code', 'description')
+            ->whereIn('company_id', $userCompanyIds)
             ->orderBy('code')
             ->get();
 

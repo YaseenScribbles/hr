@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Designation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class DesignationController extends Controller
 {
@@ -12,7 +14,8 @@ class DesignationController extends Controller
      */
     public function index()
     {
-        $designations = Designation::with('company')->get();
+        $userCompanyIds = Auth::user()->companies->pluck('id')->toArray();
+        $designations = Designation::with('company')->whereIn('company_id', $userCompanyIds)->get();
         return inertia('Designation', compact('designations'));
     }
 
@@ -29,8 +32,9 @@ class DesignationController extends Controller
      */
     public function store(Request $request)
     {
+        $userCompanyIds = Auth::user()->companies->pluck('id')->toArray();
         $request->validate([
-            'company_id' => 'required|exists:companies,id',
+            'company_id' => ['required', 'integer', Rule::in($userCompanyIds)],
             'name' => 'required|string|max:255',
         ]);
 
@@ -59,10 +63,11 @@ class DesignationController extends Controller
      */
     public function update(Request $request, Designation $designation)
     {
+        $userCompanyIds = Auth::user()->companies->pluck('id')->toArray();
         $request->validate([
             'name' => 'required|string|max:255',
             'active' => 'required|boolean',
-            'company_id' => 'required|exists:companies,id'
+            'company_id' => ['required', 'integer', Rule::in($userCompanyIds)]
         ]);
 
         $designation->update([

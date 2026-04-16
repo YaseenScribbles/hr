@@ -8,6 +8,7 @@ use App\Models\Department;
 use App\Models\Designation;
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -18,13 +19,15 @@ class EmployeeController extends Controller
      */
     public function index(Request $request)
     {
+        $userCompanyIds = Auth::user()->companies->pluck('id')->toArray();
         $query = Employee::with([
             'company:id,name',
             'department:id,name',
             'designation:id,name',
             'personalDetail:id,emp_id,img_path,mobile'
         ])
-            ->withCount(['nominees', 'family']);
+            ->withCount(['nominees', 'family'])
+            ->whereIn('company_id', $userCompanyIds);
 
         // 🔍 Search (name + mobile)
         if ($request->search) {
@@ -74,12 +77,15 @@ class EmployeeController extends Controller
             ]),
 
             'departments' => Department::where('is_active', true)
+                ->whereIn('company_id', $userCompanyIds)
                 ->get(['id', 'name', 'company_id']),
 
             'categories' => Category::where('is_active', true)
+                ->whereIn('company_id', $userCompanyIds)
                 ->get(['id', 'name', 'company_id']),
 
             'designations' => Designation::where('is_active', true)
+                ->whereIn('company_id', $userCompanyIds)
                 ->get(['id', 'name', 'company_id']),
 
         ]);

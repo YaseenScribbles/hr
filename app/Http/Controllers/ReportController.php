@@ -7,13 +7,15 @@ use App\Models\Department;
 use App\Models\Designation;
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
 {
     public function index(Request $request)
     {
-
-        $query = Employee::with('company', 'department', 'designation');
+        $userCompanyIds = Auth::user()->companies->pluck('id')->toArray();
+        $query = Employee::with('company', 'department', 'designation')
+            ->whereIn('company_id', $userCompanyIds);
 
         // 🔍 Search (name + mobile)
         if ($request->search) {
@@ -63,9 +65,11 @@ class ReportController extends Controller
             ]),
 
             'departments' => Department::where('is_active', true)
+                ->whereIn('company_id', $userCompanyIds)
                 ->get(['id', 'name', 'company_id']),
 
             'designations' => Designation::where('is_active', true)
+                ->whereIn('company_id', $userCompanyIds)
                 ->get(['id', 'name', 'company_id']),
         ]);
     }

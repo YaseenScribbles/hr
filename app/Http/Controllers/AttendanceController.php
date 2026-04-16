@@ -8,6 +8,7 @@ use App\Models\Employee;
 use App\Models\Roster;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
@@ -19,16 +20,19 @@ class AttendanceController extends Controller
      */
     public function index(Request $request)
     {
+        $userCompanyIds = Auth::user()->companies->pluck('id')->toArray();
         $month = (int) $request->query('month', Carbon::now()->month);
         $year = (int) $request->query('year', Carbon::now()->year);
         $selectedDesignation = (int) $request->query('designation_id', 0);
 
         $designations = Designation::select('id', 'name')
+            ->whereIn('company_id', $userCompanyIds)
             ->orderBy('name')
             ->get();
 
         $employees = Employee::select('id', 'name', 'des_id')
             ->with('designation:id,name')
+            ->whereIn('company_id', $userCompanyIds)
             ->when($selectedDesignation, function ($query) use ($selectedDesignation) {
                 $query->where('des_id', $selectedDesignation);
             })
@@ -38,6 +42,7 @@ class AttendanceController extends Controller
         $rosters = Roster::with(['employee', 'shift'])
             ->whereMonth('date', $month)
             ->whereYear('date', $year)
+            ->whereIn('employee_id', $employees->pluck('id')->toArray())
             ->get();
 
         // Create attendance records for holidays from roster
@@ -97,6 +102,7 @@ class AttendanceController extends Controller
             'month_days' => $monthDays,
             'selected_month' => $month,
             'selected_year' => $year,
+            'rosters' => $rosters,
         ]);
     }
 

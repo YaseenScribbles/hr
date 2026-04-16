@@ -24,6 +24,16 @@ type AttendanceItem = {
     date: string;
 };
 
+type RosterItem = {
+    id: number;
+    employee: EmployeeOption;
+    date: string;
+    shift?: {
+        id: number;
+        code: string;
+    } | null;
+};
+
 type MonthDay = {
     day: number;
     weekday: string;
@@ -52,6 +62,7 @@ interface Props extends PageProps {
     selected_month: number;
     selected_year: number;
     selected_designation: number;
+    rosters: RosterItem[];
 }
 
 const monthNames = [
@@ -94,7 +105,7 @@ const getStatusColor = (status?: string) => {
     }
 };
 
-const Attendance = ({ auth, flash, attendances, employees, summary, designations, month_days, selected_month, selected_year, selected_designation }: Props) => {
+const Attendance = ({ auth, flash, attendances, employees, summary, designations, month_days, selected_month, selected_year, selected_designation, rosters }: Props) => {
     const [selectedMonth, setSelectedMonth] = useState(selected_month);
     const [selectedYear, setSelectedYear] = useState(selected_year);
     const [selectedDesignation, setSelectedDesignation] = useState(Number(selected_designation));
@@ -118,6 +129,27 @@ const Attendance = ({ auth, flash, attendances, employees, summary, designations
             return acc;
         }, {});
     }, [attendances]);
+
+    const rosterMap = useMemo(() => {
+        return rosters.reduce<Record<number, Record<number, true>>>((acc, roster) => {
+            const day = new Date(roster.date).getDate();
+            acc[roster.employee.id] = acc[roster.employee.id] || {};
+            acc[roster.employee.id][day] = true;
+            return acc;
+        }, {});
+    }, [rosters]);
+
+    const isRosterMissingForDay = (day: number) => {
+        return modalEmployeeIds.some((employeeId) => !rosterMap[employeeId]?.[day]);
+    };
+
+    const isCellLocked = (day: number) => {
+        return isHolidayLocked(day) || isRosterMissingForDay(day);
+    };
+
+    const selectedEmployeesMissingRoster = modalEmployeeIds.some(
+        (employeeId) => !rosterMap[employeeId] || Object.keys(rosterMap[employeeId]).length === 0,
+    );
 
     useEffect(() => {
         const flashData = flash as { toast?: { type: "success" | "error"; message: string } } | undefined;
@@ -198,7 +230,7 @@ const Attendance = ({ auth, flash, attendances, employees, summary, designations
     };
 
     const handleCellToggle = (day: number) => {
-        if (isHolidayLocked(day)) {
+        if (isCellLocked(day)) {
             return;
         }
 
@@ -227,7 +259,7 @@ const Attendance = ({ auth, flash, attendances, employees, summary, designations
             Object.keys(next).forEach((dayKey) => {
                 const day = Number(dayKey);
 
-                if (!isHolidayLocked(day)) {
+                if (!isCellLocked(day)) {
                     delete next[day];
                 }
             });
@@ -322,7 +354,7 @@ const Attendance = ({ auth, flash, attendances, employees, summary, designations
     }, [month_days]);
 
     return (
-        <Layout role={auth.user?.role}>
+        <Layout role={auth.user?.role} userName={auth.user?.name}>
             <div className="p-2">
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-4">
                     <div>
@@ -586,6 +618,11 @@ const Attendance = ({ auth, flash, attendances, employees, summary, designations
                                             Assigned: {Object.values(cells).filter(Boolean).length} days
                                         </div>
                                     </div>
+                                    {selectedEmployeesMissingRoster && (
+                                        <div className="mt-3 rounded-md border border-orange-500 bg-orange-900/20 p-3 text-xs text-orange-100">
+                                            Some selected employees are missing roster entries for this month. Days without roster are disabled for attendance entry.
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="flex flex-wrap items-center gap-3 justify-end">
                                     <button
@@ -661,22 +698,26 @@ const Attendance = ({ auth, flash, attendances, employees, summary, designations
 
                                             const holidayLocked = isHolidayLocked(day.day);
 
+                                            const rosterLocked = isRosterMissingForDay(day.day);
+                                            const locked = holidayLocked || rosterLocked;
+
                                             return (
                                                 <button
                                                     key={`cell-${day.day}`}
                                                     type="button"
-                                                    disabled={holidayLocked}
+                                                    disabled={locked}
                                                     onMouseDown={() => {
-                                                        if (holidayLocked) return;
+                                                        if (locked) return;
                                                         handleCellToggle(day.day);
                                                         setIsDragging(true);
                                                     }}
                                                     onMouseEnter={() => {
-                                                        if (isDragging && !holidayLocked) {
+                                                        if (isDragging && !locked) {
                                                             handleCellToggle(day.day);
                                                         }
                                                     }}
-                                                    className={`${cellClasses} min-h-22.5 transition-colors duration-150 ${holidayLocked ? "cursor-not-allowed" : ""}`}
+                                                    className={`${cellClasses} min-h-22.5 transition-colors duration-150 ${locked ? "cursor-not-allowed opacity-50" : ""}`}
+                                                    title={rosterLocked ? "Roster missing for one or more selected employees" : undefined}
                                                 >
                                                     <div className="mt-2 text-lg font-semibold">{day.day}</div>
                                                     <div className="mt-2 text-sm">
@@ -712,7 +753,7 @@ const Attendance = ({ auth, flash, attendances, employees, summary, designations
                                     </div>
                                     <button
                                         type="submit"
-                                        disabled={isSaving}
+                                        disabled={isSaving || selectedEmployeesMissingRoster}
                                         className="rounded-md bg-blue-500 px-5 py-3 text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-70"
                                     >
                                         Update Attendance

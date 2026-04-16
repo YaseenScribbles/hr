@@ -30,7 +30,11 @@ const AddEditModal = ({
 }: AddEditModalProps) => {
     if (!isOpen) return null;
 
-    const { data, setData, post, errors, processing } = useForm({
+    const { data, setData, post, errors, processing } = useForm<{
+        company_id: number|null;
+        name: string | null;
+        active: boolean;
+    }>({
         company_id: 1,
         name: "",
         active: true,
@@ -66,8 +70,8 @@ const AddEditModal = ({
             });
         } else {
             setData({
-                company_id: 1,
-                name: "",
+                company_id: null,
+                name: null,
                 active: true,
             });
         }
@@ -96,11 +100,12 @@ const AddEditModal = ({
                         <select
                             id="company"
                             className="w-full rounded p-2 bg-gray-600 text-white placeholder:text-gray-400 border border-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            value={data.company_id}
+                            value={data.company_id ?? ""}
                             onChange={(e) =>
-                                setData("company_id", e.target.value)
+                                setData("company_id", Number(e.target.value))
                             }
                         >
+                            <option value="" disabled>Select a company</option>
                             {companies?.map((company) => (
                                 <option key={company.id} value={company.id}>
                                     {company.name}
@@ -120,7 +125,7 @@ const AddEditModal = ({
                             id="name"
                             className="w-full rounded p-2 bg-gray-600 text-white placeholder:text-gray-400 border border-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             placeholder="Enter name"
-                            value={data.name}
+                            value={data.name ?? ""}
                             onChange={(e) => setData("name", e.target.value)}
                         />
                         {errors.name && (

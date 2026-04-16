@@ -14,7 +14,7 @@ function Dashboard({ flash, auth }: Props) {
     }, [flash]);
 
     return (
-        <Layout role={auth.user?.role}>
+        <Layout role={auth.user?.role} userName={auth.user?.name}>
             <div>Dashboard</div>
         </Layout>
     );

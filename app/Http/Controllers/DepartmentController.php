@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Department;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 class DepartmentController extends Controller
 {
@@ -12,9 +14,15 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        $departments = Department::with('company')->get();
+        // Load departments and companies only for companies the user is associated with
+        $departmentCompanyIds = Auth::user()->companies->pluck('id')->toArray();
+
+        $departments = Department::with('company')
+            ->whereIn('company_id', $departmentCompanyIds)
+            ->get();
+
         return inertia('Department', [
-            'departments' => $departments
+            'departments' => $departments,
         ]);
     }
 
@@ -31,8 +39,10 @@ class DepartmentController extends Controller
      */
     public function store(Request $request)
     {
+        $userCompanyIds = Auth::user()->companies->pluck('id')->toArray();
+
         $request->validate([
-            'company_id' => 'required|exists:companies,id',
+            'company_id' => ['required', 'integer', Rule::in($userCompanyIds)],
             'name' => 'required|string|max:255',
         ]);
 
@@ -61,10 +71,12 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, Department $department)
     {
+        $userCompanyIds = Auth::user()->companies->pluck('id')->toArray();
+
         $request->validate([
             'name' => 'required|string|max:255',
             'active' => 'required|boolean',
-            'company_id' => 'required|exists:companies,id'
+            'company_id' => ['required', 'integer', Rule::in($userCompanyIds)],
         ]);
 
         $department->update([

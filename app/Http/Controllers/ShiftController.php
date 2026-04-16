@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\ShiftMaster;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class ShiftController extends Controller
 {
@@ -13,9 +15,11 @@ class ShiftController extends Controller
      */
     public function index()
     {
+        $userCompanyIds = Auth::user()->companies->pluck('id')->toArray();
         return inertia('ShiftMaster', [
             'shifts' => ShiftMaster::with('company')
                 ->latest()
+                ->whereIn('company_id', $userCompanyIds)
                 ->get(),
         ]);
     }
@@ -33,8 +37,9 @@ class ShiftController extends Controller
      */
     public function store(Request $request)
     {
+        $userCompanyIds = Auth::user()->companies->pluck('id')->toArray();
         $validated = $request->validate([
-            'company_id' => 'required|exists:companies,id',
+            'company_id' => ['required', 'integer', Rule::in($userCompanyIds)],
             'code' => 'required|string|unique:shift_master,code',
             'description' => 'nullable|string',
 
@@ -92,8 +97,9 @@ class ShiftController extends Controller
      */
     public function update(Request $request, ShiftMaster $shift)
     {
+        $userCompanyIds = Auth::user()->companies->pluck('id')->toArray();
         $validated = $request->validate([
-            'company_id' => 'required|exists:companies,id',
+            'company_id' => ['required', 'integer', Rule::in($userCompanyIds)],
             'code' => 'required|string|unique:shift_master,code,' . $shift->id,
             'description' => 'nullable|string',
 

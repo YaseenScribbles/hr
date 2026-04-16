@@ -39,7 +39,7 @@ const Designation = ({ designations, flash, user_companies, auth }: Props) => {
     }, [flash]);
 
     return (
-        <Layout role={auth.user?.role}>
+        <Layout role={auth.user?.role} userName={auth.user?.name}>
             <div className="p-4">
                 <div className="flex justify-between items-center mb-4">
                     <h1 className="text-2xl text-white font-bold">

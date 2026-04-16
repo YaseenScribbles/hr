@@ -28,13 +28,13 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        $companies = Company::factory(2)->create();
+        // $companies = Company::factory(2)->create();
 
-        foreach ($companies as $company) {
-            CompanyUser::create([
-                'user_id' => $user->id,
-                'company_id' => $company->id
-            ]);
-        }
+        // foreach ($companies as $company) {
+        //     CompanyUser::create([
+        //         'user_id' => $user->id,
+        //         'company_id' => $company->id
+        //     ]);
+        // }
     }
 }

@@ -21,7 +21,7 @@ const Company = ({ companies, flash, auth }: Props) => {
     }, [flash])
 
     return (
-        <Layout role={auth.user?.role}>
+        <Layout role={auth.user?.role} userName={auth.user?.name}>
             <div className="p-4">
                 <div className="container flex justify-between items-center">
                     <h1 className="text-2xl text-white font-bold">Company</h1>
