@@ -40,7 +40,7 @@ class ShiftController extends Controller
         $userCompanyIds = Auth::user()->companies->pluck('id')->toArray();
         $validated = $request->validate([
             'company_id' => ['required', 'integer', Rule::in($userCompanyIds)],
-            'code' => 'required|string|unique:shift_master,code',
+            'code' => 'required|string',
             'description' => 'nullable|string',
 
             // times (nullable)
@@ -100,7 +100,7 @@ class ShiftController extends Controller
         $userCompanyIds = Auth::user()->companies->pluck('id')->toArray();
         $validated = $request->validate([
             'company_id' => ['required', 'integer', Rule::in($userCompanyIds)],
-            'code' => 'required|string|unique:shift_master,code,' . $shift->id,
+            'code' => 'required|string',
             'description' => 'nullable|string',
 
             'login' => 'nullable|date_format:H:i',

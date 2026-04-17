@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import Layout from "../Layouts/Layout";
 import { PageProps } from "@inertiajs/core";
+import { PaginatedData } from "../../../types/global";
+import Pagination from "../Components/Pagination";
 import toast, { Toaster } from "react-hot-toast";
 import { format } from "date-fns";
 import { router, useForm } from "@inertiajs/react";
 
 interface Props extends PageProps {
-    deductions: Deduction[];
+    deductions: PaginatedData<Deduction>;
     employees: {
         id: number;
         name: string;
@@ -97,22 +99,21 @@ const Deduction = ({ deductions, flash, auth, employees, companies }: Props) => 
                             </tr>
                         </thead>
                         <tbody>
-                            {deductions &&
-                                deductions.map((ded) => (
-                                    <tr key={ded.id}>
-                                        <td className="py-2">{ded.employee.name}</td>
-                                        <td className="py-2">{format(ded.from_date, "dd-MM-yyyy")}</td>
-                                        <td className="py-2">{format(ded.to_date, "dd-MM-yyyy")}</td>
-                                        <td className="py-2">{ded.type.toUpperCase()}</td>
-                                        <td className="py-2">{ded.percentage ?? "-"}</td>
-                                        <td className="py-2">{ded.amount}</td>
-                                        <td className="py-2">
-                                            {format(
-                                                new Date(ded.created_at!),
-                                                "MMM dd, yyyy hh:mm a",
-                                            )}
-                                        </td>
-                                        <td className="py-2">
+                            {deductions?.data?.map((ded) => (
+                                <tr key={ded.id}>
+                                    <td className="py-2">{ded.employee.name}</td>
+                                    <td className="py-2">{format(ded.from_date, "dd-MM-yyyy")}</td>
+                                    <td className="py-2">{format(ded.to_date, "dd-MM-yyyy")}</td>
+                                    <td className="py-2">{ded.type.toUpperCase()}</td>
+                                    <td className="py-2">{ded.percentage ?? "-"}</td>
+                                    <td className="py-2">{ded.amount}</td>
+                                    <td className="py-2">
+                                        {format(
+                                            new Date(ded.created_at!),
+                                            "MMM dd, yyyy hh:mm a",
+                                        )}
+                                    </td>
+                                    <td className="py-2">
                                             <button
                                                 className="bg-green-500 text-white px-2 py-1 rounded-md hover:bg-green-600 mr-2 cursor-pointer"
                                                 onClick={() => {
@@ -150,6 +151,7 @@ const Deduction = ({ deductions, flash, auth, employees, companies }: Props) => 
                         </tbody>
                     </table>
                 </div>
+                {deductions?.links && <Pagination links={deductions.links} />}
             </div>
             <GenerateSalaryModal
                 isOpen={showGenerateModal}

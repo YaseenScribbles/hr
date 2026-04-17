@@ -31,7 +31,9 @@ class DeductionController extends Controller
             $query->select('id')
                 ->from('employees')
                 ->whereIn('company_id', $companies->pluck('id'));
-        })->with('employee')->get();
+        })->with('employee')
+            ->latest()
+            ->paginate(8);
 
         return inertia('Deductions', [
             'deductions' => $deductions,
