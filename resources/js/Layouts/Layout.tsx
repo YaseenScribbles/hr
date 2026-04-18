@@ -162,17 +162,6 @@ function Layout({ children, role, userName }: LayoutProps) {
                                     >
                                         Defaults
                                     </a>
-                                    <a
-                                        href="#"
-                                        onClick={() =>
-                                            router.visit(
-                                                route("deductions.index"),
-                                            )
-                                        }
-                                        className="block px-4 py-2 text-gray-300 hover:bg-gray-700"
-                                    >
-                                        Deductions
-                                    </a>
                                 </div>
                             </div>
                             <a
@@ -199,6 +188,17 @@ function Layout({ children, role, userName }: LayoutProps) {
                                 className="text-gray-300 hover:text-white"
                             >
                                 Attendance
+                            </a>
+                            <a
+                                href="#"
+                                onClick={() =>
+                                    router.visit(
+                                        route("deductions.index"),
+                                    )
+                                }
+                                className="text-gray-300 hover:text-white"
+                            >
+                                Deductions
                             </a>
                             <a
                                 href="#"

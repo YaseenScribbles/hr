@@ -30,6 +30,7 @@ export const mapEmployeeToForm = (emp: EmployeeDetail): EmployeeFormData => {
             salary: emp.salary ? Number(emp.salary) : null,
             esi_eligible: emp.esi_eligible,
             esi_number: emp.esi_number,
+            pf_number: emp.pf_number
         },
 
         personal: {
