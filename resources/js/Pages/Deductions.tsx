@@ -334,8 +334,6 @@ const Modal = ({
                         >
                             <option value="">Select Type</option>
                             <option value="advance">Advance</option>
-                            <option value="esi">ESI</option>
-                            <option value="pf">PF</option>
                         </select>
                     </div>
 
