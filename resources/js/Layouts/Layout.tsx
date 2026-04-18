@@ -140,17 +140,20 @@ function Layout({ children, role, userName }: LayoutProps) {
                                     >
                                         Designation
                                     </a>
-                                    <a
-                                        href="#"
-                                        onClick={() =>
-                                            router.visit(
-                                                route("shifts.index"),
-                                            )
-                                        }
-                                        className="block px-4 py-2 text-gray-300 hover:bg-gray-700"
-                                    >
-                                        Shift Master
-                                    </a>
+                                    {
+                                        role && role == "admin" &&
+                                        <a
+                                            href="#"
+                                            onClick={() =>
+                                                router.visit(
+                                                    route("shifts.index"),
+                                                )
+                                            }
+                                            className="block px-4 py-2 text-gray-300 hover:bg-gray-700"
+                                        >
+                                            Shift Master
+                                        </a>
+                                    }
                                     <a
                                         href="#"
                                         onClick={() =>
