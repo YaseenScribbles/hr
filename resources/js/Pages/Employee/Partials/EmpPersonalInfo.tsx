@@ -95,7 +95,7 @@ export default function PersonalSection({ data, setData }: Props) {
 
                 {/* Parent Name */}
                 <div className="md:col-span-2">
-                    <label className="text-gray-300 text-sm">Parent Name</label>
+                    <label className="text-gray-300 text-sm">Spouse/Parent Name</label>
                     <input
                         type="text"
                         value={data.personal.parent_name ?? ""}
@@ -198,7 +198,6 @@ export default function PersonalSection({ data, setData }: Props) {
                 </div>
 
                 {/* Conditional Field */}
-
                 <div className="md:col-span-4">
                     <label className="text-gray-300 text-sm">
                         If Yes, Details
