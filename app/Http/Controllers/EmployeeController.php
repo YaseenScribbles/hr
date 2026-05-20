@@ -8,6 +8,7 @@ use App\Models\Department;
 use App\Models\Designation;
 use App\Models\Employee;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -121,6 +122,7 @@ class EmployeeController extends Controller
             'employee.esi_number' => 'nullable|string',
             'employee.pf_number' => 'nullable|string',
 
+
             // Personal
 
             'personal.img' => 'nullable|image|max:2048',
@@ -225,6 +227,7 @@ class EmployeeController extends Controller
             'employee.code' => 'required|unique:employees,code,' . $employee->id,
             'employee.name' => 'required|string',
             'employee.gender' => 'required',
+            'employee.status' => 'required|boolean',
             'employee.d_o_j' => 'required|date',
             'employee.company_id' => 'required|exists:companies,id',
             'employee.dept_id' => 'required|exists:departments,id',
@@ -272,7 +275,14 @@ class EmployeeController extends Controller
         DB::transaction(function () use ($request, $employee, $validated) {
 
             // UPDATE EMPLOYEE
-            $employee->update($validated['employee']);
+            $employeeData = $validated['employee'];
+            if ($employeeData['status'] === false) {
+                $employeeData['d_o_l'] = Carbon::today()->toDateString();
+            } else {
+                $employeeData['d_o_l'] = null;
+            }
+
+            $employee->update($employeeData);
 
             // PERSONAL (update or create)
             if (!empty($validated['personal'])) {

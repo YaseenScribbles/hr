@@ -1,6 +1,6 @@
 import { PageProps } from "@inertiajs/core";
 import Layout from "../Layouts/Layout";
-import { Fragment, useEffect, useMemo, useState, type FormEvent } from "react";
+import { Fragment, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { router } from "@inertiajs/react";
 import { route } from "ziggy-js";
 import toast from "react-hot-toast";
@@ -62,6 +62,7 @@ interface Props extends PageProps {
     selected_month: number;
     selected_year: number;
     selected_designation: number;
+    filters?: { search?: string };
     rosters: RosterItem[];
 }
 
@@ -105,10 +106,11 @@ const getStatusColor = (status?: string) => {
     }
 };
 
-const Attendance = ({ auth, flash, attendances, employees, summary, designations, month_days, selected_month, selected_year, selected_designation, rosters }: Props) => {
+const Attendance = ({ auth, flash, attendances, employees, summary, designations, month_days, selected_month, selected_year, selected_designation, filters, rosters }: Props) => {
     const [selectedMonth, setSelectedMonth] = useState(selected_month);
     const [selectedYear, setSelectedYear] = useState(selected_year);
     const [selectedDesignation, setSelectedDesignation] = useState(Number(selected_designation));
+    const [search, setSearch] = useState<string>(String(filters?.search ?? ""));
     const [showModal, setShowModal] = useState(false);
     const [selectedEmployeeIds, setSelectedEmployeeIds] = useState<number[]>([]);
     const [modalEmployeeIds, setModalEmployeeIds] = useState<number[]>([]);
@@ -118,6 +120,7 @@ const Attendance = ({ auth, flash, attendances, employees, summary, designations
     const [isSaving, setIsSaving] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const rowsPerPage = 5;
+    const isFirstSearchRender = useRef(true);
 
     const attendanceMap = useMemo(() => {
         return attendances.reduce<Record<number, Record<number, string>>>((acc, attendance) => {
@@ -189,6 +192,18 @@ const Attendance = ({ auth, flash, attendances, employees, summary, designations
         return () => window.removeEventListener("mouseup", handleMouseUp);
     }, []);
 
+    useEffect(() => {
+        if (isFirstSearchRender.current) {
+            isFirstSearchRender.current = false;
+            return;
+        }
+        const timer = setTimeout(() => {
+            setCurrentPage(1);
+            router.get(route("attendance.index"), { month: selectedMonth, year: selectedYear, designation_id: selectedDesignation, search }, { preserveState: true, replace: true });
+        }, 400);
+        return () => clearTimeout(timer);
+    }, [search]);
+
     const handleFilterChange = (month: number, year: number, designationId?: number) => {
         const nextDesignation = designationId !== undefined ? designationId : selectedDesignation;
         setSelectedMonth(month);
@@ -198,7 +213,7 @@ const Attendance = ({ auth, flash, attendances, employees, summary, designations
 
         router.get(
             route("attendance.index"),
-            { month, year, designation_id: nextDesignation },
+            { month, year, designation_id: nextDesignation, search },
             { preserveState: true, replace: true },
         );
     };
@@ -406,6 +421,16 @@ const Attendance = ({ auth, flash, attendances, employees, summary, designations
                                     </option>
                                 ))}
                             </select>
+                        </label>
+                        <label className="text-sm text-gray-300">
+                            Search
+                            <input
+                                type="text"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                placeholder="Search name"
+                                className="ml-2 rounded-md border border-gray-600 bg-gray-800 px-3 py-2 text-white"
+                            />
                         </label>
                     </div>
                 </div>

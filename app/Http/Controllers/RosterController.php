@@ -29,9 +29,30 @@ class RosterController extends Controller
             ->orderBy('name')
             ->get();
 
-        $employees = Employee::select('id', 'name', 'des_id')
+        $employeeQuery = Employee::select('id', 'name', 'des_id')
             ->with('designation:id,name')
             ->whereIn('company_id', $userCompanyIds)
+            ->where(function ($q) use ($month, $year) {
+                $q->where('status', true)
+                    ->orWhereIn('id', function ($subQ) use ($month, $year) {
+                        $subQ->select('employee_id')
+                            ->from('rosters')
+                            ->whereMonth('date', $month)
+                            ->whereYear('date', $year);
+                    });
+            });
+
+        // global search (name + mobile)
+        if ($request->search) {
+            $employeeQuery->where(function ($q) use ($request) {
+                $q->where('name', 'like', "%{$request->search}%")
+                    ->orWhereHas('personalDetail', function ($q2) use ($request) {
+                        $q2->where('mobile', 'like', "%{$request->search}%");
+                    });
+            });
+        }
+
+        $employees = $employeeQuery
             ->when($selectedDesignation, function ($query) use ($selectedDesignation) {
                 $query->where('des_id', $selectedDesignation);
             })
@@ -85,6 +106,7 @@ class RosterController extends Controller
             'month_days' => $monthDays,
             'selected_month' => $month,
             'selected_year' => $year,
+            'filters' => $request->only(['search', 'designation_id', 'month', 'year']),
         ]);
     }
 
