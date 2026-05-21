@@ -105,11 +105,11 @@ class DeductionController extends Controller
                 ->whereBetween('date', [$fromDate->toDateString(), $toDate->toDateString()])
                 ->get();
 
-            $workedDays = $attendances->whereIn('status', ['X', '/A', 'A/'])->count();
+            $workedDays = $attendances->whereIn('status', ['X', '/A', 'A/', 'HWP'])->count();
             $holidayDays = $attendances->where('status', 'WH')->count();
             $absentDays = $attendances->where('status', 'A')->count();
             $workedShift = $attendances->sum(function ($attendance) {
-                if ($attendance->status === 'X') {
+                if (in_array($attendance->status, ['X', 'HWP'])) {
                     return 1;
                 }
 

@@ -51,6 +51,7 @@ type SummaryItem = {
     first_half_absent: number;
     second_half_absent: number;
     holiday_days: number;
+    hwp_days: number;
 };
 
 interface Props extends PageProps {
@@ -87,6 +88,7 @@ const statusOptions = [
     { code: "A/", label: "First half absent", classes: "bg-orange-500 text-white" },
     { code: "/A", label: "Second half absent", classes: "bg-amber-500 text-slate-950" },
     { code: "WH", label: "Holiday", classes: "bg-blue-500 text-white" },
+    { code: "HWP", label: "Holiday With Pay", classes: "bg-purple-500 text-white" },
 ];
 
 const getStatusColor = (status?: string) => {
@@ -101,6 +103,8 @@ const getStatusColor = (status?: string) => {
             return "bg-orange-500 text-white";
         case "WH":
             return "bg-blue-500 text-white";
+        case "HWP":
+            return "bg-purple-500 text-white";
         default:
             return "bg-gray-900 text-gray-300";
     }
@@ -494,6 +498,7 @@ const Attendance = ({ auth, flash, attendances, employees, summary, designations
                                     <th className="py-3 px-3">1st Half</th>
                                     <th className="py-3 px-3">2nd Half</th>
                                     <th className="py-3 px-3">Holiday</th>
+                                    <th className="py-3 px-3">HWP</th>
                                     <th className="py-3 px-3">Action</th>
                                 </tr>
                             </thead>
@@ -516,6 +521,7 @@ const Attendance = ({ auth, flash, attendances, employees, summary, designations
                                         <td className="py-2 px-3">{row.first_half_absent}</td>
                                         <td className="py-2 px-3">{row.second_half_absent}</td>
                                         <td className="py-2 px-3">{row.holiday_days}</td>
+                                        <td className="py-2 px-3">{row.hwp_days}</td>
                                         <td className="py-2 px-3">
                                             <button
                                                 className="bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600"

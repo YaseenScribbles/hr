@@ -111,6 +111,7 @@ class AttendanceController extends Controller
                 'first_half_absent' => $statusCounts['A/'] ?? 0,
                 'second_half_absent' => $statusCounts['/A'] ?? 0,
                 'holiday_days' => $statusCounts['WH'] ?? 0,
+                'hwp_days' => $statusCounts['HWP'] ?? 0,
             ];
         });
 
@@ -138,7 +139,7 @@ class AttendanceController extends Controller
             'year' => 'required|integer|min:2000|max:2100',
             'assignments' => 'required|array',
             'assignments.*.day' => 'required_with:assignments|integer|min:1|max:31',
-            'assignments.*.status' => ['nullable', 'string', Rule::in(['X', 'A', '/A', 'A/', 'WH'])],
+            'assignments.*.status' => ['nullable', 'string', Rule::in(['X', 'A', '/A', 'A/', 'WH', 'HWP'])],
             'employee_id' => 'nullable|integer|exists:employees,id',
             'employee_ids' => 'nullable|array',
             'employee_ids.*' => 'integer|exists:employees,id',
@@ -283,7 +284,7 @@ class AttendanceController extends Controller
         $validated = $request->validate([
             'employee_id' => 'required|exists:employees,id',
             'date' => 'required|date',
-            'status' => ['nullable', 'string', Rule::in(['X', 'A', '/A', 'A/', 'WH'])],
+            'status' => ['nullable', 'string', Rule::in(['X', 'A', '/A', 'A/', 'WH', 'HWP'])],
         ]);
 
         $attendance->update([
@@ -314,6 +315,7 @@ class AttendanceController extends Controller
             'A/' => 'First half absent',
             '/A' => 'Second half absent',
             'WH' => 'Holiday',
+            'HWP' => 'Holiday With Pay',
             default => null,
         };
     }

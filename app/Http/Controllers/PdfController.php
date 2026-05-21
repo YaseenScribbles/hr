@@ -300,8 +300,11 @@ class PdfController extends Controller
         $halfDays = $timings->filter(function ($timing) {
             return ($timing->status == "/A" || $timing->status == "A/");
         })->count();
+        $hwpDays = $timings->filter(function ($timing) {
+            return $timing->status == "HWP";
+        })->count();
 
-        return view('employee.timing-report', compact('emp', 'company', 'timings', 'startDate', 'endDate', 'daysInMonth', 'weeklyOff', 'presentDays', 'absentDays', 'halfDays'));
+        return view('employee.timing-report', compact('emp', 'company', 'timings', 'startDate', 'endDate', 'daysInMonth', 'weeklyOff', 'presentDays', 'absentDays', 'halfDays', 'hwpDays'));
     }
 
     public function generateAttendanceReport(Request $request, Company $company)
@@ -345,8 +348,8 @@ class PdfController extends Controller
             JOIN departments d ON e.dept_id = d.id
             JOIN designations de ON e.des_id = de.id
             JOIN attd_salary s ON e.id = s.employee_id
-            WHERE e.company_id = ? AND a.date >= ? AND a.date <= ?",
-            [$company->id, $startDate->toDateString(), $endDate->toDateString()]));
+            WHERE e.company_id = ? AND a.date >= ? AND a.date <= ? AND s.from_date >= ? AND s.to_date <= ?",
+            [$company->id, $startDate->toDateString(), $endDate->toDateString(), $startDate->toDateString(), $endDate->toDateString()]));
 
         $attendanceData = $attendanceRows
             ->groupBy('employee_id')

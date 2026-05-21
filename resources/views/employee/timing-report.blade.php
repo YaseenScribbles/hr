@@ -144,7 +144,7 @@
                 <th>Present Days</th>
                 <th>Absent Days</th>
                 <th>Half Days</th>
-                <th>/L</th>
+                <th>HWP Days</th>
                 <th></th>
             </tr>
             <tr>
@@ -153,7 +153,7 @@
                 <td style="text-align: center;">{{$presentDays}}</td>
                 <td style="text-align: center;">{{$absentDays}}</td>
                 <td style="text-align: center;">{{ $halfDays }}</td>
-                <td style="text-align: center;"></td>
+                <td style="text-align: center;">{{$hwpDays}}</td>
                 <td></td>
             </tr>
             <tr>
