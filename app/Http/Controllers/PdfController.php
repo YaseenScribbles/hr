@@ -239,10 +239,17 @@ class PdfController extends Controller
             $endDate->toDateString(),
         ]);
 
+        $hwpDays = DB::table('attendance')
+            ->where('employee_id', $employee->id)
+            ->whereDate('date', '>=', $startDate)
+            ->whereDate('date', '<=', $endDate)
+            ->where('status', 'HWP')
+            ->count();
+
         $formatter = new NumberFormatter('en_IN', NumberFormatter::SPELLOUT);
         $amountInWords = ucwords($formatter->format($salary[0]->net_salary ?? 0)) . ' RUPEES ONLY';
 
-        return view('employee.form-25B', compact('emp', 'company', 'salary', 'amountInWords', 'startDate', 'endDate'));
+        return view('employee.form-25B', compact('emp', 'company', 'salary', 'amountInWords', 'startDate', 'endDate', 'hwpDays'));
     }
 
     public function generateTimingReport(Request $request, Employee $employee)

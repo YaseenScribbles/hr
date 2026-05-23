@@ -199,9 +199,9 @@
         </div>
         <div class="wagesDetails">
             <p style="padding-right: 90px;padding-top: 5px;">
-                Worked.days / <span style="font-family: 'TamilFont';">வே.செ.நாட்கள்</span> : <b>{{$salary[0]->worked_shift}}</b> <br>
+                Worked.days / <span style="font-family: 'TamilFont';">வே.செ.நாட்கள்</span> : <b>{{number_format($salary[0]->worked_shift - $hwpDays, 2)}}</b> <br>
                 <br>
-                NFH / <span style="font-family: 'TamilFont';">தே.ப.வி.நாட்கள்</span> : <br>
+                NFH / <span style="font-family: 'TamilFont';">தே.ப.வி.நாட்கள்</span> : <b>{{number_format($hwpDays, 2)}}</b><br>
                 <br>
                 OT HOURS / <span style="font-family: 'TamilFont';">மி.நே</span> : <b>0.00</b> <br>
                 <br>
@@ -210,11 +210,11 @@
             <p>
                 OT Wages / <span style="font-family: 'TamilFont';">மி.நே.ஊ.தொகை</span> : <b>0.00</b><br>
                 <br>
-                Total Sal.Days / <span style="font-family: 'TamilFont';">மொ.ஊ.நாட்கள்</span> : <b>{{$salary[0]->worked_shift}}</b><br>
+                Total Sal.Days / <span style="font-family: 'TamilFont';">மொ.ஊ.நாட்கள்</span> : <b>{{number_format($salary[0]->worked_shift, 2)}}</b><br>
                 <br>
-                Total Earnings / <span style="font-family: 'TamilFont';">மொத்தம் ஈட்டிய தொகை</span> : <b>{{$salary[0]->gross_salary}}</b><br>
+                Total Earnings / <span style="font-family: 'TamilFont';">மொத்தம் ஈட்டிய தொகை</span> : <b>{{number_format($salary[0]->gross_salary, 2)}}</b><br>
                 <br>
-                Net Wages / <span style="font-family: 'TamilFont';">கொடுக்கப்பட்ட நிகர தொகை</span> : <b>{{$salary[0]->net_salary}}</b>
+                Net Wages / <span style="font-family: 'TamilFont';">கொடுக்கப்பட்ட நிகர தொகை</span> : <b>{{number_format($salary[0]->net_salary, 2)}}</b>
             </p>
             <br>
             <!-- convert net salary to words -->
