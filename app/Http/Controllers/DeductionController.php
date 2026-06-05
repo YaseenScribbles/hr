@@ -137,25 +137,26 @@ class DeductionController extends Controller
 
             $netSalary = round($grossSalary - $esi - $pf - $advance);
 
-            AttdSalary::updateOrCreate(
-                [
-                    'employee_id' => $employee->id,
-                    'from_date' => $fromDate->toDateString(),
-                    'to_date' => $toDate->toDateString(),
-                ],
-                [
-                    'worked_days' => $workedDays,
-                    'worked_shift' => $workedShift,
-                    'holiday_days' => $holidayDays,
-                    'absent_days' => $absentDays,
-                    'wages' => $wages,
-                    'gross_salary' => $grossSalary,
-                    'esi' => $esi,
-                    'pf' => $pf,
-                    'advance' => $advance,
-                    'net_salary' => $netSalary,
-                ]
-            );
+            AttdSalary::where('employee_id', $employee->id)
+                ->where('from_date', $fromDate->toDateString())
+                ->where('to_date', $toDate->toDateString())
+                ->delete();
+
+            AttdSalary::create([
+                'employee_id' => $employee->id,
+                'from_date' => $fromDate->toDateString(),
+                'to_date' => $toDate->toDateString(),
+                'worked_days' => $workedDays,
+                'worked_shift' => $workedShift,
+                'holiday_days' => $holidayDays,
+                'absent_days' => $absentDays,
+                'wages' => $wages,
+                'gross_salary' => $grossSalary,
+                'esi' => $esi,
+                'pf' => $pf,
+                'advance' => $advance,
+                'net_salary' => $netSalary,
+            ]);
         }
 
         return redirect()->route('deductions.index')->with('toast', [
