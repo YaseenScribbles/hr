@@ -411,4 +411,24 @@ class PdfController extends Controller
 
         return view('employee.attendance', compact('categories', 'departments', 'designations', 'attendanceData', 'company', 'startDate', 'endDate'));
     }
+
+    public function generateAppointmentOrder2(Employee $employee)
+    {
+        $emp_array = DB::select("SELECT d.name [designation],e.name,
+        epd.present_address, e.d_o_j, e.salary
+        FROM employees e
+        JOIN designations d ON e.des_id = d.id
+        JOIN emp_personal_details epd ON epd.emp_id = e.id
+        WHERE e.id = ?", [$employee->id]);
+
+        $emp = $emp_array[0];
+
+        $emp_family = DB::select("SELECT name, d_o_b, age, relationship, profession
+        FROM emp_family
+        WHERE emp_id = ?", [$employee->id]);
+
+        $company = $employee->company()->first();
+
+        return view('employee.appointmentOrder2', compact('emp', 'emp_family', 'company'));
+    }
 }

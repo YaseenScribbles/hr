@@ -103,6 +103,10 @@
                 Appointment Order
                 <span>Print appointment order</span>
             </a>
+            <a class="card print-link" href="{{ route('pdf.appointment-order-2', $employee->id) }}?print=1">
+                Appointment Order 2
+                <span>Print appointment order 2</span>
+            </a>
             <a class="card print-link" href="{{ route('pdf.induction-training', $employee->id) }}?print=1">
                 Induction Training
                 <span>Print induction training</span>

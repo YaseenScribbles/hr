@@ -34,6 +34,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/bio-data/{employee}', [\App\Http\Controllers\PdfController::class, 'generateBioData'])->name('pdf.bio-data');
     Route::get('/t-and-c/{employee}', [\App\Http\Controllers\PdfController::class, 'generateTermsAndConditions'])->name('pdf.t-and-c');
     Route::get('/appointment-order/{employee}', [\App\Http\Controllers\PdfController::class, 'generateAppointmentOrder'])->name('pdf.appointment-order');
+    Route::get('/appointment-order-2/{employee}', [\App\Http\Controllers\PdfController::class, 'generateAppointmentOrder2'])->name('pdf.appointment-order-2');
     Route::get('/induction-training/{employee}', [\App\Http\Controllers\PdfController::class, 'generateInductionTraining'])->name('pdf.induction-training');
     Route::get('/form-v/{employee}', [\App\Http\Controllers\PdfController::class, 'generateFormV'])->name('pdf.form-v');
     Route::get('/form-f/{employee}', [\App\Http\Controllers\PdfController::class, 'generateFormF'])->name('pdf.form-f');
