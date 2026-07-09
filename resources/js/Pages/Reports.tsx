@@ -280,7 +280,7 @@ const Reports = ({ auth, flash, filter, user_companies, departments, designation
                         <tbody>
                             {employees && employees.data.map((emp, index) => (
                                 <tr key={emp.id} className="border-b border-gray-500">
-                                    <td className="p-2">{index + 1}</td>
+                                    <td className="p-2">{(employees.current_page - 1) * employees.per_page + index + 1}</td>
                                     <td className="p-2">{emp.code}</td>
                                     <td className="p-2">{emp.name}</td>
                                     <td className="p-2">{emp.company.name}</td>
