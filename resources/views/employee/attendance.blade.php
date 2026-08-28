@@ -135,7 +135,8 @@
                     <th>Gross Wages</th>
                     <th>ESI</th>
                     <th>PF</th>
-                    <th>TotalDed</th>
+                    <th>Adv.</th>
+                    <th>Ded.</th>
                     <th>Net Wages</th>
                     <th>Signature</th>
                 </tr>
@@ -182,7 +183,8 @@
                                                 <td>{{ number_format($data->ot_wages ?? 0, 2) }}</td>
                                                 <td>{{ number_format($data->gross_salary ?? 0, 2) }}</td>
                                                 <td>{{ number_format($data->esi ?? 0, 2) }}</td>
-                                                <td>{{ number_format($data->pf ?? 0, 2) }}
+                                                <td>{{ number_format($data->pf ?? 0, 2) }}</td>
+                                                <td>{{ number_format($data->advance ?? 0, 2) }}</td>
                                                 <td>{{ number_format(($data->esi ?? 0) + ($data->pf ?? 0) + ($data->advance ?? 0), 2) }}</td>
                                                 <td>{{ number_format($data->net_salary ?? 0, 2) }}</td>
                                                 <td style="min-width: 80px; overflow: hidden;"></td>
