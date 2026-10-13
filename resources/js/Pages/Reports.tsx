@@ -53,6 +53,8 @@ type ModalPayload = {
     companyId: number | string;
     month: number;
     year: number;
+    preparedDate: string;
+    paymentDate: string;
 };
 
 const monthOptions = [
@@ -80,6 +82,8 @@ const Reports = ({ auth, flash, filter, user_companies, departments, designation
         companyId: user_companies?.[0]?.id ?? "",
         month: new Date().getMonth() + 1,
         year: currentYear,
+        preparedDate: "",
+        paymentDate: "",
     });
     const [filters, setFilters] = useState({
         search: filter?.search || "",
@@ -103,6 +107,8 @@ const Reports = ({ auth, flash, filter, user_companies, departments, designation
             companyId: prev.companyId || user_companies?.[0]?.id || "",
             month: new Date().getMonth() + 1,
             year: currentYear,
+            preparedDate: "",
+            paymentDate: "",
         }));
         setModalType(type);
     };
@@ -116,11 +122,13 @@ const Reports = ({ auth, flash, filter, user_companies, departments, designation
             return;
         }
 
-        const { employeeId, companyId, month, year } = modalPayload;
+        const { employeeId, companyId, month, year, preparedDate, paymentDate } = modalPayload;
         let url = "";
 
         if (modalType === "payslip" && employeeId) {
             url = `${route("pdf.form-25b", { employee: employeeId })}?month=${month}&year=${year}&print=1`;
+            if (preparedDate) url += `&prepared_date=${preparedDate}`;
+            if (paymentDate) url += `&payment_date=${paymentDate}`;
         }
 
         if (modalType === "timings" && employeeId) {
@@ -393,6 +401,41 @@ const Reports = ({ auth, flash, filter, user_companies, departments, designation
                                         ))}
                                     </select>
                                 </div>
+                            )}
+                            {modalType === "payslip" && (
+                                <>
+                                    <div>
+                                        <label className="mb-2 block text-sm font-medium text-slate-300">Prepared Date</label>
+                                        <input
+                                            type="date"
+                                            value={modalPayload.preparedDate}
+                                            onChange={(e) =>
+                                                setModalPayload({
+                                                    ...modalPayload,
+                                                    preparedDate: e.target.value,
+                                                })
+                                            }
+                                            className="w-full rounded-lg border border-slate-700 bg-slate-900 px-4 py-3 text-white"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="mb-2 block text-sm font-medium text-slate-300">Date of Payment</label>
+                                        <input
+                                            type="date"
+                                            value={modalPayload.paymentDate}
+                                            onChange={(e) =>
+                                                setModalPayload({
+                                                    ...modalPayload,
+                                                    paymentDate: e.target.value,
+                                                })
+                                            }
+                                            className="w-full rounded-lg border border-slate-700 bg-slate-900 px-4 py-3 text-white"
+                                        />
+                                    </div>
+                                    <p className="sm:col-span-2 text-xs text-slate-400">
+                                        Leave blank to use the salary generation date.
+                                    </p>
+                                </>
                             )}
                         </div>
                         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">

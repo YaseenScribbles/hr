@@ -134,9 +134,9 @@
                         DOB : &nbsp; <b>{{Carbon\Carbon::parse($emp->d_o_b)->format('d-m-Y')}}</b>
                     </td>
                     <td>
-                        Prepared Date : &nbsp; <b>{{ Carbon\Carbon::parse($salary[0]->created_at)->format('d-m-Y') }}</b><br>
+                        Prepared Date : &nbsp; <b>{{ $preparedDate->format('d-m-Y') }}</b><br>
                         <br>
-                        Date of Payment : &nbsp; <b>{{ Carbon\Carbon::parse($salary[0]->created_at)->format('d-m-Y') }}</b>
+                        Date of Payment : &nbsp; <b>{{ $paymentDate->format('d-m-Y') }}</b>
                     </td>
                 </tr>
             </table>

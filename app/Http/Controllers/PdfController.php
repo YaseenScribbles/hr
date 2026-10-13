@@ -199,6 +199,10 @@ class PdfController extends Controller
 
     public function generateForm25B(Request $request, Employee $employee)
     {
+        $request->validate([
+            'prepared_date' => 'nullable|date',
+            'payment_date' => 'nullable|date',
+        ]);
 
         $month = $request->query('month') ?? Carbon::now()->month;
         $year = $request->query('year') ?? Carbon::now()->year;
@@ -246,10 +250,13 @@ class PdfController extends Controller
             ->where('status', 'HWP')
             ->count();
 
+        $preparedDate = Carbon::parse($request->query('prepared_date') ?: $salary[0]->created_at);
+        $paymentDate = Carbon::parse($request->query('payment_date') ?: $salary[0]->created_at);
+
         $formatter = new NumberFormatter('en_IN', NumberFormatter::SPELLOUT);
         $amountInWords = ucwords($formatter->format($salary[0]->net_salary ?? 0)) . ' RUPEES ONLY';
 
-        return view('employee.form-25B', compact('emp', 'company', 'salary', 'amountInWords', 'startDate', 'endDate', 'hwpDays'));
+        return view('employee.form-25B', compact('emp', 'company', 'salary', 'amountInWords', 'startDate', 'endDate', 'hwpDays', 'preparedDate', 'paymentDate'));
     }
 
     public function generateTimingReport(Request $request, Employee $employee)
